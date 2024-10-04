@@ -6,6 +6,7 @@ import io
 import urllib, base64
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from django.http import JsonResponse
 
 def home(request):
     data = pd.read_excel('fypdata.xlsx')
@@ -83,3 +84,31 @@ def predict_result(request):
 
 def chat(request):
     return render(request, 'chat.html')
+
+def chatbot_response(request):
+    user_message = request.GET.get('message').lower()
+
+    responses = {
+        "bike thief": "The person will be charged with the offense code 381a.",
+        "theft": "The person will be charged with the offense code 380.",
+        "girl kidnapping": "The person will be charged with the offense code 365b.",
+        "electricity theft": "The person will be charged with the offense code 462j.",
+        "dacoity": "The person will be charged with the offense code 392.",
+        "us": "The person will be charged with arm ordinance.",
+        "murder": "The person will be charged with the offense code 302.",
+        "check bounce": "The person will be charged with the offense code 489f.",
+        "narcotics": "The person will be charged with the offense code 3/4.",
+        "fight": "The person will be charged with the offense code 337.",
+        "fight with women": "The person will be charged with the offense code 354.",
+        "sata bazi": "The person will be charged with gambling.",
+    }
+
+    if user_message == "hi" or user_message == "hello":
+        reply = "Hello! How can I help you today?"
+    else:
+        reply = "I'm sorry, I don't understand."
+        for key in responses:
+            if key in user_message:
+                reply = responses[key]
+                break
+    return JsonResponse({'response': reply})

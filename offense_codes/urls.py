@@ -8,4 +8,5 @@ urlpatterns = [
     path('predict-year/', views.predict_year, name='predict_year'),
     path('predict-result/', views.predict_result, name='predict_result'),
     path('chat/', views.chat, name='chat'),
+    path('chatbot-response/', views.chatbot_response, name='chatbot_response'),
 ]
