@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predict Year</title>
+    <title>Predict Crime Rate</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Predict Year Page</h1>
+    <div class="container mt-5">
+        <h1>Predict Crime Rates for Future Years</h1>
+        <form action="{% url 'predict_result' %}" method="get">
+            <div class="form-group">
+                <label for="year">Enter a Year Between 2025 and 2030:</label>
+                <input type="number" class="form-control" id="year" name="year" required min="2025" max="2030">
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+    </div>
 </body>
 </html>
