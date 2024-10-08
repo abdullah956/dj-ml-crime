@@ -10,7 +10,7 @@ from django.http import JsonResponse
 
 def home(request):
     data = pd.read_excel('fypdata.xlsx')
-    data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area']
+    data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
     data = data.drop(0)
     area_crime_data = data.groupby('Area')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
     area_crime_data_dict = area_crime_data.to_dict(orient='index')
@@ -22,7 +22,7 @@ def search_area(request):
 def search_result(request):
     area_input = request.GET.get('area') 
     data = pd.read_excel('fypdata.xlsx')
-    data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area']
+    data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
     area_data = data[data['Area'].str.lower() == area_input.lower()]
     if area_data.empty:
         return render(request, 'search_result.html', {'error': 'No data found for the specified area.'})
@@ -50,7 +50,7 @@ def predict_result(request):
     user_year = int(request.GET.get('year'))
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
-    data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area']
+    data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
     years = np.array([2019, 2020, 2021, 2022, 2023, 2024]).reshape(-1, 1)
     future_years = np.array([2025, 2026, 2027, 2028, 2029, 2030]).reshape(-1, 1)
     predictions = {}
@@ -98,3 +98,28 @@ def chatbot_response(request):
             reply = f"The person will be charged with the offense code {offense_code}."
             break
     return JsonResponse({'response': reply})
+
+# def search_locality(request):
+#     return render(request, 'search_locality.html')
+
+# def search_locality_result(request):
+#     locality_input = request.GET.get('locality') 
+#     data = pd.read_excel('fypdata.xlsx')
+#     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
+#     locality_data = data[data['Locality'].str.lower() == locality_input.lower()]
+#     if locality_data.empty:
+#         return render(request, 'search_locality_result.html', {'error': 'No data found for the specified locality.'})
+#     heatmap_data = locality_data[['Category', '2019', '2020', '2021', '2022', '2023', '2024']]
+#     heatmap_data.set_index('Category', inplace=True)
+#     plt.figure(figsize=(10, 6))
+#     sns.heatmap(heatmap_data, annot=True, fmt="g", cmap="YlGnBu", linewidths=0.5)
+#     plt.title(f"Crime Offenses Heatmap for {locality_input} (2019-2024)")
+#     plt.xlabel("Year")
+#     plt.ylabel("Crime Category")
+#     buffer = io.BytesIO()
+#     plt.savefig(buffer, format='png')
+#     buffer.seek(0)
+#     image_png = buffer.getvalue()
+#     buffer.close()
+#     graph = base64.b64encode(image_png).decode('utf-8')
+#     return render(request, 'search_locality_result.html', {'graph': graph, 'locality_input': locality_input})
