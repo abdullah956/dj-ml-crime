@@ -18,12 +18,17 @@
         <li>
           <a href="{% url 'chat' %}">Chat</a>
         </li>
-        {% comment %} <li>
-          <a href="{% url 'search_locality' %}">Search Locality</a>
-        </li> {% endcomment %}
+        <li>
+          <a href="{% url 'area_crime_heatmap' %}">Area Crime Heat Map</a>
+        </li>
+        <li>
+          <a href="{% url 'predicted_crime_by_area' %}">Predict Area Crime</a>
+        </li>  
+        <li>
+          <a href="{% url 'crime_rate_by_area' %}">Crime 19-24</a>
+        </li>     
       </ul>
     </nav>
-
     <div class="container mt-5">
       <h1>Crime Data by Area</h1>
       <table class="table table-striped">

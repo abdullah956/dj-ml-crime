@@ -1,0 +1,10 @@
+
+    <h2>Predicted Crime Rates (2025-2030)</h2>
+
+    {% for area, crime, graph in graphs %}
+        <div>
+            <h3>{{ crime }} in {{ area }}</h3>
+            <img src="data:image/png;base64,{{ graph }}" alt="Predicted Crime Rates for {{ crime }} in {{ area }}">
+        </div>
+    {% endfor %}
+
