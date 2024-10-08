@@ -1,92 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat Bot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        #chat-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            max-width: 600px;
-            margin: 50px auto;
-        }
-        #chat-box {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            height: 400px;
-            overflow-y: scroll;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f1f1f1;
-        }
-        .message {
-            margin: 5px;
-            clear: both;
-        }
-        .bot-message {
-            color: #007bff;
-            text-align: left;
-            background-color: #e7f3ff;
-            border-radius: 5px;
-            padding: 10px;
-        }
-        .user-message {
-            color: #155724;
-            text-align: right;
-            background-color: #d4edda;
-            border-radius: 5px;
-            padding: 10px;
-        }
-        .user-message-container {
-            text-align: right;
-        }
-        .bot-message-container {
-            text-align: left;
-        }
-        #send-button {
-            width: 100%;
-        }
+      body {
+        background-color: #f8f9fa;
+      }
+      #chat-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        max-width: 600px;
+        margin: 50px auto;
+      }
+      #chat-box {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        height: 400px;
+        overflow-y: scroll;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f1f1f1;
+      }
+      .message {
+        margin: 5px;
+        clear: both;
+      }
+      .bot-message {
+        color: #007bff;
+        text-align: left;
+        background-color: #e7f3ff;
+        border-radius: 5px;
+        padding: 10px;
+      }
+      .user-message {
+        color: #155724;
+        text-align: right;
+        background-color: #d4edda;
+        border-radius: 5px;
+        padding: 10px;
+      }
+      .user-message-container {
+        text-align: right;
+      }
+      .bot-message-container {
+        text-align: left;
+      }
+      #send-button {
+        width: 100%;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="chat-container">
-        <h1 class="text-center">Chat Bot</h1>
-        <div id="chat-box"></div>
-        <input type="text" id="user-input" class="form-control" placeholder="Type your message..." autocomplete="off">
-        <button id="send-button" class="btn btn-primary mt-2">Send</button>
+      <h1 class="text-center">Chat Bot</h1>
+      <div id="chat-box"></div>
+      <input type="text" id="user-input" class="form-control" placeholder="Type your message..." autocomplete="off" />
+      <button id="send-button" class="btn btn-primary mt-2">Send</button>
     </div>
 
     <script>
-        $(document).ready(function() {
-            $("#chat-box").append('<div class="message bot-message-container"><div class="message bot-message">Hello! How can I help you today?</div></div>');
-
-            $("#send-button").click(function() {
-                let userMessage = $("#user-input").val().trim();
-                if (userMessage) {
-                    $("#chat-box").append('<div class="message user-message-container"><div class="message user-message">' + userMessage + '</div></div>');
-                    $("#user-input").val('');
-
-                    $.get("{% url 'chatbot_response' %}", { message: userMessage }, function(data) {
-                        $("#chat-box").append('<div class="message bot-message-container"><div class="message bot-message">' + data.response + '</div></div>');
-                        $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
-                    });
-                }
-            });
-
-            $("#user-input").keypress(function(e) {
-                if (e.which == 13) { // Enter key pressed
-                    $("#send-button").click();
-                }
-            });
-        });
+      $(document).ready(function () {
+        $('#chat-box').append('<div class="message bot-message-container"><div class="message bot-message">Hello! How can I help you today?</div></div>')
+      
+        $('#send-button').click(function () {
+          let userMessage = $('#user-input').val().trim()
+          if (userMessage) {
+            $('#chat-box').append('<div class="message user-message-container"><div class="message user-message">' + userMessage + '</div></div>')
+            $('#user-input').val('')
+      
+            $.get("{% url 'chatbot_response' %}", { message: userMessage }, function (data) {
+              $('#chat-box').append('<div class="message bot-message-container"><div class="message bot-message">' + data.response + '</div></div>')
+              $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight)
+            })
+          }
+        })
+      
+        $('#user-input').keypress(function (e) {
+          if (e.which == 13) {
+            $('#send-button').click()
+          }
+        })
+      })
     </script>
-</body>
+  </body>
 </html>
