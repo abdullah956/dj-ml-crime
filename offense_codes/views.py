@@ -121,6 +121,7 @@ def area_crime_heatmap(request):
 
 def predicted_crime_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
+    data = data.drop(0)
     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
     
     years = np.array([2019, 2020, 2021, 2022, 2023, 2024]).reshape(-1, 1)
@@ -164,6 +165,7 @@ def predicted_crime_by_area_view(request):
 
 def crime_rate_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
+    data = data.drop(0)
     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
 
     ncols = 1
