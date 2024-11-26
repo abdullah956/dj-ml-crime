@@ -1,0 +1,7 @@
+the project folder , open the terminal runs the following commands step by  step
+python -m venv env
+./env/scripts/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+

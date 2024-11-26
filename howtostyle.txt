@@ -1,0 +1,2 @@
+make the css put it into the folder named static
+link the path in the html page present in the template folder
