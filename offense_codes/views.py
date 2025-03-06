@@ -1,4 +1,3 @@
-from django.shortcuts import render
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -7,14 +6,65 @@ import urllib, base64
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import ContactMessage, NewsletterSubscription
 
 def home(request):
     data = pd.read_excel('fypdata.xlsx')
     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
     data = data.drop(0)
-    area_crime_data = data.groupby('Area')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
+    
+    crime_years = ['2019', '2020', '2021', '2022', '2023', '2024']
+    area_crime_data = data.groupby('Area')[crime_years].sum()
     area_crime_data_dict = area_crime_data.to_dict(orient='index')
-    return render(request, 'home.html', {'area_crime_data': area_crime_data_dict})
+
+    max_crimes = 0
+    city_with_max_crimes = ""
+    year_with_max_crimes = ""
+    yearly_totals = {year: 0 for year in crime_years}
+
+    for city, crimes in area_crime_data_dict.items():
+        city_total = sum(crimes.values())
+        if city_total > max_crimes:
+            max_crimes = city_total
+            city_with_max_crimes = city
+
+        for year, count in crimes.items():
+            yearly_totals[year] += count
+
+    year_with_max_crimes = max(yearly_totals, key=yearly_totals.get)
+
+    if request.method == "POST":
+        if "message" in request.POST:
+            name = request.POST.get("name")
+            email = request.POST.get("email")
+            subject = request.POST.get("subject")
+            message = request.POST.get("message")
+
+            ContactMessage.objects.create(name=name, email=email, subject=subject, message=message)
+            messages.success(request, "Your message has been sent. Thank you!")
+
+        elif "email" in request.POST:
+            email = request.POST.get("email")
+            if email:
+                if not NewsletterSubscription.objects.filter(email=email).exists():
+                    NewsletterSubscription.objects.create(email=email)
+                    messages.success(request, "Your subscription request has been sent. Thank you!")
+                else:
+                    messages.warning(request, "You are already subscribed.")
+            else:
+                messages.error(request, "Please enter a valid email.")
+
+        return redirect("home")
+
+    return render(request, "home.html", {
+        'area_crime_data': area_crime_data_dict,
+        'max_crimes': max_crimes,
+        'city_with_max_crimes': city_with_max_crimes,
+        'year_with_max_crimes': year_with_max_crimes,
+        'yearly_totals': yearly_totals
+    })
 
 def search_area(request):
     return render(request, 'search_area.html')
@@ -119,6 +169,52 @@ def area_crime_heatmap(request):
     return render(request, 'area_crime_heatmap.html', {'graph': graph})
 
 
+# def predicted_crime_by_area_view(request):
+#     data = pd.read_excel('fypdata.xlsx')
+#     data = data.drop(0)
+#     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
+    
+#     years = np.array([2019, 2020, 2021, 2022, 2023, 2024]).reshape(-1, 1)
+#     future_years = np.array([2025, 2026, 2027, 2028, 2029, 2030]).reshape(-1, 1)
+#     predictions = {}
+
+#     for area in data['Area'].unique():
+#         area_data = data[data['Area'] == area]
+#         for crime_category in area_data['Category'].unique():
+#             crime_data = area_data[area_data['Category'] == crime_category]
+#             crime_values = crime_data[['2019', '2020', '2021', '2022', '2023', '2024']].values.flatten().reshape(-1, 1)
+#             model = LinearRegression()
+#             model.fit(years, crime_values)
+#             future_predictions = model.predict(future_years)
+            
+#             if area not in predictions:
+#                 predictions[area] = {}
+#             predictions[area][crime_category] = future_predictions.flatten()
+
+#     graphs = []
+#     for area, area_predictions in predictions.items():
+#         for crime, predicted_values in area_predictions.items():
+#             plt.figure(figsize=(8, 4))
+#             plt.bar(future_years.flatten(), predicted_values, color='skyblue')
+#             plt.title(f"Predicted Crime Rates for {crime} in {area} (2025-2030)")
+#             plt.xlabel("Year")
+#             plt.ylabel("Predicted Crime Count")
+#             plt.xticks(future_years.flatten())
+
+#             buffer = io.BytesIO()
+#             plt.savefig(buffer, format='png')
+#             buffer.seek(0)
+#             image_png = buffer.getvalue()
+#             buffer.close()
+#             graph = base64.b64encode(image_png).decode('utf-8')
+#             graphs.append((area, crime, graph))
+#             plt.close()
+
+#     return render(request, 'predicted_crime_by_area.html', {'graphs': graphs})
+
+import matplotlib
+matplotlib.use('Agg')  # Use a non-interactive backend
+
 def predicted_crime_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
@@ -161,6 +257,7 @@ def predicted_crime_by_area_view(request):
             plt.close()
 
     return render(request, 'predicted_crime_by_area.html', {'graphs': graphs})
+
 
 
 def crime_rate_by_area_view(request):
