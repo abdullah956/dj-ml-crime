@@ -37,6 +37,12 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ========================================================                  -->
+  <style>
+    .hero {
+      background: url("{% static 'img/bg.png' %}") top left no-repeat;
+      background-size: cover;
+    }
+    </style>
   </head>
 
   <body class="index-page">
@@ -83,7 +89,7 @@
         <div class="container">
           <div class="row gy-4">
             <div class="col-lg-8 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
-              <h1>Predicted Crime Rates for <span>Year {{ user_year }}</span></h1>
+              <h1> <span>Predicted Crime Rates for Year {{ user_year }}</span></h1>
               {% comment %} <p>"CrimeLens – Spot. Analyze. Prevent."</p> {% endcomment %}
               <div class="d-flex">
                 {% comment %} <a href="#about" class="btn-get-started">Get Started</a> {% endcomment %}

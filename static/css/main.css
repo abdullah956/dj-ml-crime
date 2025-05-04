@@ -839,18 +839,18 @@ section,
 --------------------------------------------------------------*/
 .hero {
   width: 100%;
-  min-height: 85vh;
+  min-height: 115vh;
   position: relative;
   padding: 60px 0;
   display: flex;
   align-items: center;
-  background: url("../img/bg.webp") top left;
-  background-size: cover;
+  background: url("{% static 'img/bg.png' %}") top left no-repeat;
+  background-size:cover;
 }
 
 .hero:before {
   content: "";
-  background: color-mix(in srgb, var(--background-color), transparent 30%);
+  /* background: color-mix(in srgb, var(--background-color), transparent 30%); */
   position: absolute;
   bottom: 0;
   top: 0;
@@ -874,7 +874,7 @@ section,
 }
 
 .hero p {
-  color: black;
+  color: rgb(255, 255, 255);
   margin: 5px 0 30px 0;
   font-size: 20px;
   font-weight: 400;
