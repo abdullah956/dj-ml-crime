@@ -227,6 +227,14 @@ def area_crime_heatmap(request):
 import matplotlib
 matplotlib.use('Agg')  # Use a non-interactive backend
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import io
+import base64
+import seaborn as sns
+
 def predicted_crime_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
@@ -235,6 +243,10 @@ def predicted_crime_by_area_view(request):
     years = np.array([2019, 2020, 2021, 2022, 2023, 2024]).reshape(-1, 1)
     future_years = np.array([2025, 2026, 2027, 2028, 2029, 2030]).reshape(-1, 1)
     predictions = {}
+
+    # Define color palette (you can use seaborn color palettes for variety)
+    colors = sns.color_palette("Set1", len(data['Category'].unique()))
+    crime_category_to_color = {category: colors[i] for i, category in enumerate(data['Category'].unique())}
 
     for area in data['Area'].unique():
         area_data = data[data['Area'] == area]
@@ -253,11 +265,20 @@ def predicted_crime_by_area_view(request):
     for area, area_predictions in predictions.items():
         for crime, predicted_values in area_predictions.items():
             plt.figure(figsize=(8, 4))
-            plt.bar(future_years.flatten(), predicted_values, color='skyblue')
-            plt.title(f"Predicted Crime Rates for {crime} in {area} (2025-2030)")
-            plt.xlabel("Year")
-            plt.ylabel("Predicted Crime Count")
+
+            # Assign a unique color for each crime category using the dictionary
+            color = crime_category_to_color[crime]
+            
+            # Plotting the bar chart
+            plt.bar(future_years.flatten(), predicted_values, color=color)
+            plt.title(f"Predicted Crime Rates for {crime} in {area} (2025-2030)", fontsize=14)
+            plt.xlabel("Year", fontsize=12)
+            plt.ylabel("Predicted Crime Count", fontsize=12)
             plt.xticks(future_years.flatten())
+
+            # Adding gridlines and customizing the appearance
+            plt.grid(axis='y', linestyle='--', alpha=0.7)
+            plt.tight_layout()
 
             buffer = io.BytesIO()
             plt.savefig(buffer, format='png')
@@ -269,6 +290,7 @@ def predicted_crime_by_area_view(request):
             plt.close()
 
     return render(request, 'predicted_crime_by_area.html', {'graphs': graphs})
+
 
 
 

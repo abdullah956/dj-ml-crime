@@ -102,13 +102,14 @@
       <!-- /Featured Services Section -->
       <div class="d-flex flex-column align-items-center">
          {% for area, crime, graph in graphs %}
-        <div class="card shadow-lg border-0 p-4 mb-4 text-center" style="width: 1000px; border-radius: 12px;">
-          <h3 class="text-primary">{{ crime }} in {{ area }}</h3>
-          <div class="d-flex justify-content-center">
-            <img src="data:image/png;base64,{{ graph }}" alt="Predicted Crime Rates for {{ crime }} in {{ area }}" class="img-fluid rounded shadow" style="max-width: 100%;" />
-          </div>
-        </div>
-        {% endfor %}
+  <div class="card shadow-lg border-0 p-4 mb-4" style="border-radius: 12px;">
+    <h3 class="mb-4 text-primary">Predicted Crime Rates for {{ crime }} in {{ area }} (2025-2030)</h3>
+    <div class="d-flex justify-content-center">
+      <img src="data:image/png;base64,{{ graph }}" alt="Predicted Crime Rate Graph" class="img-fluid rounded shadow" style="max-width: 100%; border-radius: 10px;" />
+    </div>
+  </div>
+{% endfor %}
+
       </div>
 
       <!-- /Skills Section -->
