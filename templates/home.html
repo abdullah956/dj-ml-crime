@@ -27,6 +27,24 @@
 
     <!-- Main CSS File -->
     <link href="{% static 'css/main.css' %}" rel="stylesheet" />
+    <!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
+    <style>
+    #map-ryk, #map-sdk, #map-bwp {
+      height: 400px;
+      margin-bottom: 15px;
+    }
+    select {
+      margin: 5px;
+      padding: 3px;
+    }
+  </style>
+
+
 
     <!--               =======================================================
   * Template Name: BizLand
@@ -164,7 +182,7 @@
         <div class="container section-title" data-aos="fade-up">
           <h2>Recents</h2>
           <p>
-            <span>Crime Data by</span> <span class="description-title">Area</span>
+            <span>Total Crime Data by</span> <span class="description-title">City</span>
           </p>
         </div>
         <!-- End Section Title -->
@@ -174,7 +192,7 @@
             <table class="table table-striped text-center">
               <thead class="bg-primary text-white">
                 <tr>
-                  <th>Area</th>
+                  <th>City</th>
                   <th>2019</th>
                   <th>2020</th>
                   <th>2021</th>
@@ -202,6 +220,8 @@
       </section>
       <!-- /About Section -->
 
+
+
       <!-- Skills Section -->
       <section id="crime-trends" class="skills section">
         <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -222,6 +242,57 @@
           </div>
         </div>
       </section>
+
+
+    <div class="container">
+      <h2>Crime Maps (2019-2024)</h2>
+
+    <div>
+      <h4>Rahim Yar Khan</h4>
+      <select id="year-ryk" onchange="updateMap('Rahim Yar Khan')">
+        <option value="all">All Years</option>
+        <option>2019</option><option>2020</option><option>2021</option>
+        <option>2022</option><option>2023</option><option>2024</option>
+      </select>
+      <select id="crime-ryk" onchange="updateMap('Rahim Yar Khan')">
+        <option value="all">All Crimes</option>
+      </select>
+      <div id="map-ryk"></div>
+    </div>
+
+    <div>
+      <h4>Sadiqabad</h4>
+      <select id="year-sdk" onchange="updateMap('Sadiqabad')">
+        <option value="all">All Years</option>
+        <option>2019</option><option>2020</option><option>2021</option>
+        <option>2022</option><option>2023</option><option>2024</option>
+      </select>
+      <select id="crime-sdk" onchange="updateMap('Sadiqabad')">
+        <option value="all">All Crimes</option>
+      </select>
+      <div id="map-sdk"></div>
+    </div>
+
+    <div>
+      <h4>Bahawalpur</h4>
+      <select id="year-bwp" onchange="updateMap('Bahawalpur')">
+        <option value="all">All Years</option>
+        <option>2019</option><option>2020</option><option>2021</option>
+        <option>2022</option><option>2023</option><option>2024</option>
+      </select>
+      <select id="crime-bwp" onchange="updateMap('Bahawalpur')">
+        <option value="all">All Crimes</option>
+      </select>
+      <div id="map-bwp"></div>
+    </div>
+    </div>
+
+
+
+
+
+      
+
 
       <!-- /Skills Section -->
 
@@ -410,245 +481,7 @@
 
       <!-- /Services Section -->
 
-      <!-- Testimonials Section -->
-      {% comment %} <section id="testimonials" class="testimonials section dark-background">
-        <img src="assets/img/testimonials-bg.jpg" class="testimonials-bg" alt="" />
-
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-          <div class="swiper init-swiper">
-            <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 600,
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": "auto",
-              "pagination": {
-                "el": ".swiper-pagination",
-                "type": "bullets",
-                "clickable": true
-              }
-            }
-          </script>
-            <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img" alt="" />
-                  <h3>Saul Goodman</h3>
-                  <h4>Ceo &amp; Founder</h4>
-                  <div class="stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div>
-              <!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img" alt="" />
-                  <h3>Sara Wilsson</h3>
-                  <h4>Designer</h4>
-                  <div class="stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div>
-              <!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt="" />
-                  <h3>Jena Karlis</h3>
-                  <h4>Store Owner</h4>
-                  <div class="stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div>
-              <!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="" />
-                  <h3>Matt Brandon</h3>
-                  <h4>Freelancer</h4>
-                  <div class="stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div>
-              <!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <img src="assets/img/testimonials/testimonials-5.jpg" class="testimonial-img" alt="" />
-                  <h3>John Larson</h3>
-                  <h4>Entrepreneur</h4>
-                  <div class="stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div>
-              <!-- End testimonial item -->
-            </div>
-            <div class="swiper-pagination"></div>
-          </div>
-        </div>
-      </section> {% endcomment %}
-      <!-- /Testimonials Section -->
-
-      <!-- Portfolio Section -->
-      {% comment %} <section id="portfolio" class="portfolio section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-          <h2>Portfolio</h2>
-          <p>
-            <span>Check Our&nbsp;</span> <span class="description-title">Portfolio</span>
-          </p>
-        </div>
-        <!-- End Section Title -->
-
-        <div class="container">
-          <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
-            <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-              <li data-filter="*" class="filter-active">All</li>
-              <li data-filter=".filter-app">App</li>
-              <li data-filter=".filter-product">Card</li>
-              <li data-filter=".filter-branding">Web</li>
-            </ul>
-            <!-- End Portfolio Filters -->
-
-            <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-1.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>App 1</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-1.jpg" title="App 1" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-2.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>Product 1</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-2.jpg" title="Product 1" data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-3.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>Branding 1</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-3.jpg" title="Branding 1" data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-4.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>App 2</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-4.jpg" title="App 2" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-5.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>Product 2</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-5.jpg" title="Product 2" data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-6.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>Branding 2</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-6.jpg" title="Branding 2" data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-7.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>App 3</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-7.jpg" title="App 3" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-8.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>Product 3</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-8.jpg" title="Product 3" data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-                <img src="assets/img/masonry-portfolio/masonry-portfolio-9.jpg" class="img-fluid" alt="" />
-                <div class="portfolio-info">
-                  <h4>Branding 3</h4>
-                  <p>Lorem ipsum, dolor sit</p>
-                  <a href="assets/img/masonry-portfolio/masonry-portfolio-9.jpg" title="Branding 2" data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
-                </div>
-              </div>
-              <!-- End Portfolio Item -->
-            </div>
-            <!-- End Portfolio Container -->
-          </div>
-        </div>
-      </section> {% endcomment %}
-      <!-- /Portfolio Section -->
+    
 
       <!-- Team Section -->
       <section id="team" class="team section light-background">
@@ -703,95 +536,7 @@
       </section>
       <!-- /Team Section -->
 
-      <!-- Pricing Section -->
-      {% comment %} <section id="pricing" class="pricing section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-          <h2>Pricing</h2>
-          <p>
-            <span>Check our</span> <span class="description-title">Pricing</span>
-          </p>
-        </div>
-        <!-- End Section Title -->
 
-        <div class="container">
-          <div class="row gy-3">
-            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="100">
-              <div class="pricing-item">
-                <h3>Free</h3>
-                <h4><sup>$</sup>0<span>/ month</span></h4>
-                <ul>
-                  <li>Aida dere</li>
-                  <li>Nec feugiat nisl</li>
-                  <li>Nulla at volutpat dola</li>
-                  <li class="na">Pharetra massa</li>
-                  <li class="na">Massa ultricies mi</li>
-                </ul>
-                <div class="btn-wrap">
-                  <a href="#" class="btn-buy">Buy Now</a>
-                </div>
-              </div>
-            </div>
-            <!-- End Pricing Item -->
-
-            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="200">
-              <div class="pricing-item featured">
-                <h3>Business</h3>
-                <h4><sup>$</sup>19<span>/ month</span></h4>
-                <ul>
-                  <li>Aida dere</li>
-                  <li>Nec feugiat nisl</li>
-                  <li>Nulla at volutpat dola</li>
-                  <li>Pharetra massa</li>
-                  <li class="na">Massa ultricies mi</li>
-                </ul>
-                <div class="btn-wrap">
-                  <a href="#" class="btn-buy">Buy Now</a>
-                </div>
-              </div>
-            </div>
-            <!-- End Pricing Item -->
-
-            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
-              <div class="pricing-item">
-                <h3>Developer</h3>
-                <h4><sup>$</sup>29<span>/ month</span></h4>
-                <ul>
-                  <li>Aida dere</li>
-                  <li>Nec feugiat nisl</li>
-                  <li>Nulla at volutpat dola</li>
-                  <li>Pharetra massa</li>
-                  <li>Massa ultricies mi</li>
-                </ul>
-                <div class="btn-wrap">
-                  <a href="#" class="btn-buy">Buy Now</a>
-                </div>
-              </div>
-            </div>
-            <!-- End Pricing Item -->
-
-            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
-              <div class="pricing-item">
-                <span class="advanced">Advanced</span>
-                <h3>Ultimate</h3>
-                <h4><sup>$</sup>49<span>/ month</span></h4>
-                <ul>
-                  <li>Aida dere</li>
-                  <li>Nec feugiat nisl</li>
-                  <li>Nulla at volutpat dola</li>
-                  <li>Pharetra massa</li>
-                  <li>Massa ultricies mi</li>
-                </ul>
-                <div class="btn-wrap">
-                  <a href="#" class="btn-buy">Buy Now</a>
-                </div>
-              </div>
-            </div>
-            <!-- End Pricing Item -->
-          </div>
-        </div>
-      </section> {% endcomment %}
-      <!-- /Pricing Section -->
 
       <!-- Faq Section -->
       <section id="faq" class="faq section light-background">
@@ -942,5 +687,225 @@
 
     <!-- Main JS File -->
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+    const coordinates = {
+      "Rahim Yar Khan": [28.4194, 70.2989],
+      "Sadiqabad": [28.3062, 70.1302],
+      "Bahawalpur": [29.3956, 71.6836]
+    };
+
+    const crimeColors = {
+      "bike theft": "red",
+      "theft": "orange",
+      "girl kidnaping": "pink",
+      "electricity theft": "yellow",
+      "dacoty": "brown",
+      "us": "blue",
+      "murder": "black",
+      "check bounce": "purple",
+      "narcotics": "green",
+      "fight": "darkred",
+      "fight with women": "deeppink",
+      "sata bazi": "gray"
+    };
+
+    const allCategories = Object.keys(crimeColors);
+
+    const areaCrimeData = {
+  "Rahim Yar Khan": {
+    "2019": {
+      "bike theft": 121, "theft": 80, "girl kidnaping": 30, "electricity theft": 23,
+      "dacoty": 12, "us": 18, "murder": 7, "check bounce": 15,
+      "narcotics": 22, "fight": 78, "fight with women": 11, "sata bazi": 9
+    },
+    "2020": {
+      "bike theft": 117, "theft": 75, "girl kidnaping": 31, "electricity theft": 25,
+      "dacoty": 10, "us": 14, "murder": 6, "check bounce": 12,
+      "narcotics": 20, "fight": 87, "fight with women": 13, "sata bazi": 8
+    },
+    "2021": {
+      "bike theft": 135, "theft": 90, "girl kidnaping": 38, "electricity theft": 38,
+      "dacoty": 14, "us": 10, "murder": 8, "check bounce": 14,
+      "narcotics": 19, "fight": 77, "fight with women": 10, "sata bazi": 12
+    },
+    "2022": {
+      "bike theft": 90, "theft": 82, "girl kidnaping": 32, "electricity theft": 40,
+      "dacoty": 11, "us": 15, "murder": 5, "check bounce": 11,
+      "narcotics": 25, "fight": 56, "fight with women": 14, "sata bazi": 11
+    },
+    "2023": {
+      "bike theft": 135, "theft": 95, "girl kidnaping": 40, "electricity theft": 33,
+      "dacoty": 16, "us": 19, "murder": 9, "check bounce": 16,
+      "narcotics": 23, "fight": 70, "fight with women": 17, "sata bazi": 14
+    },
+    "2024": {
+      "bike theft": 156, "theft": 100, "girl kidnaping": 46, "electricity theft": 52,
+      "dacoty": 18, "us": 24, "murder": 10, "check bounce": 20,
+      "narcotics": 27, "fight": 93, "fight with women": 19, "sata bazi": 15
+    }
+  },
+
+  "Sadiqabad": {
+    "2019": {
+      "bike theft": 58, "theft": 101, "girl kidnaping": 15, "electricity theft": 12,
+      "dacoty": 9, "us": 6, "murder": 2, "check bounce": 25,
+      "narcotics": 29, "fight": 34, "fight with women": 5, "sata bazi": 7
+    },
+    "2020": {
+      "bike theft": 60, "theft": 98, "girl kidnaping": 17, "electricity theft": 14,
+      "dacoty": 8, "us": 5, "murder": 5, "check bounce": 32,
+      "narcotics": 31, "fight": 30, "fight with women": 6, "sata bazi": 6
+    },
+    "2021": {
+      "bike theft": 64, "theft": 104, "girl kidnaping": 16, "electricity theft": 15,
+      "dacoty": 10, "us": 4, "murder": 7, "check bounce": 23,
+      "narcotics": 26, "fight": 35, "fight with women": 7, "sata bazi": 8
+    },
+    "2022": {
+      "bike theft": 62, "theft": 102, "girl kidnaping": 18, "electricity theft": 17,
+      "dacoty": 12, "us": 5, "murder": 6, "check bounce": 26,
+      "narcotics": 27, "fight": 31, "fight with women": 6, "sata bazi": 9
+    },
+    "2023": {
+      "bike theft": 66, "theft": 118, "girl kidnaping": 20, "electricity theft": 18,
+      "dacoty": 14, "us": 7, "murder": 5, "check bounce": 18,
+      "narcotics": 23, "fight": 38, "fight with women": 9, "sata bazi": 10
+    },
+    "2024": {
+      "bike theft": 70, "theft": 128, "girl kidnaping": 22, "electricity theft": 20,
+      "dacoty": 15, "us": 6, "murder": 6, "check bounce": 38,
+      "narcotics": 37, "fight": 40, "fight with women": 10, "sata bazi": 12
+    }
+  },
+
+  "Bahawalpur": {
+    "2019": {
+      "bike theft": 50, "theft": 76, "girl kidnaping": 28, "electricity theft": 22,
+      "dacoty": 65, "us": 8, "murder": 4, "check bounce": 20,
+      "narcotics": 15, "fight": 40, "fight with women": 32, "sata bazi": 10
+    },
+    "2020": {
+      "bike theft": 48, "theft": 70, "girl kidnaping": 24, "electricity theft": 20,
+      "dacoty": 55, "us": 6, "murder": 5, "check bounce": 18,
+      "narcotics": 17, "fight": 38, "fight with women": 23, "sata bazi": 16
+    },
+    "2021": {
+      "bike theft": 52, "theft": 74, "girl kidnaping": 26, "electricity theft": 25,
+      "dacoty": 56, "us": 9, "murder": 3, "check bounce": 22,
+      "narcotics": 20, "fight": 36, "fight with women": 42, "sata bazi": 14
+    },
+    "2022": {
+      "bike theft": 58, "theft": 78, "girl kidnaping": 30, "electricity theft": 28,
+      "dacoty": 70, "us": 7, "murder": 6, "check bounce": 24,
+      "narcotics": 22, "fight": 41, "fight with women": 38, "sata bazi": 18
+    },
+    "2023": {
+      "bike theft": 60, "theft": 82, "girl kidnaping": 33, "electricity theft": 30,
+      "dacoty": 68, "us": 10, "murder": 5, "check bounce": 26,
+      "narcotics": 25, "fight": 43, "fight with women": 33, "sata bazi": 10
+    },
+    "2024": {
+      "bike theft": 66, "theft": 85, "girl kidnaping": 36, "electricity theft": 35,
+      "dacoty": 88, "us": 12, "murder": 7, "check bounce": 30,
+      "narcotics": 28, "fight": 46, "fight with women": 45, "sata bazi": 13
+    }
+  }
+};
+
+
+
+    const maps = {
+      "Rahim Yar Khan": L.map('map-ryk').setView(coordinates["Rahim Yar Khan"], 12),
+      "Sadiqabad": L.map('map-sdk').setView(coordinates["Sadiqabad"], 12),
+      "Bahawalpur": L.map('map-bwp').setView(coordinates["Bahawalpur"], 12)
+    };
+
+    for (let city in maps) {
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(maps[city]);
+    }
+
+    const layerGroups = {
+      "Rahim Yar Khan": L.layerGroup().addTo(maps["Rahim Yar Khan"]),
+      "Sadiqabad": L.layerGroup().addTo(maps["Sadiqabad"]),
+      "Bahawalpur": L.layerGroup().addTo(maps["Bahawalpur"])
+    };
+
+    function getRandomNearbyPoint([lat, lng], radius = 5000) {
+      const r = radius / 111300;
+      const u = Math.random();
+      const v = Math.random();
+      const w = r * Math.sqrt(u);
+      const t = 2 * Math.PI * v;
+      const dx = w * Math.cos(t);
+      const dy = w * Math.sin(t);
+      return [lat + dy, lng + dx];
+    }
+
+    function updateMap(city) {
+    const yearVal = document.getElementById(`year-${cityToKey(city)}`).value;
+    const crimeVal = document.getElementById(`crime-${cityToKey(city)}`).value;
+    const map = maps[city];
+    const layer = layerGroups[city];
+    layer.clearLayers();
+
+    const cityData = areaCrimeData[city];
+    for (const year in cityData) {
+      if (yearVal !== "all" && year !== yearVal) continue;
+      for (const crime in cityData[year]) {
+        if (crimeVal !== "all" && crime !== crimeVal) continue;
+
+        const color = crimeColors[crime] || "red";
+        const count = cityData[year][crime];
+
+        for (let i = 0; i < count; i++) {
+          const point = getRandomNearbyPoint(coordinates[city]);
+          L.circleMarker(point, {
+            radius: 4,
+            fillColor: color,
+            color: color,
+            fillOpacity: 0.7,
+            weight: 0
+          }).bindTooltip(`${crime} (${year})`).addTo(layer);
+        }
+      }
+    }
+  }
+
+    
+function cityToKey(city) {
+  const map = {
+    "Rahim Yar Khan": "ryk",
+    "Sadiqabad": "sdk",
+    "Bahawalpur": "bwp"
+  };
+  return map[city];
+}
+
+    function populateCrimeSelects() {
+    ["ryk", "sdk", "bwp"].forEach(id => {
+      const select = document.getElementById(`crime-${id}`);
+      // Empty the dropdown first
+      select.innerHTML = "<option value='all'>All Crimes</option>";
+      allCategories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.innerText = cat;
+        select.appendChild(option);
+      });
+    });
+  }
+   // Initialize the crime select dropdowns
+   populateCrimeSelects();
+  // Call updateMap for the initial loading
+  updateMap("Rahim Yar Khan");
+  updateMap("Sadiqabad");
+  updateMap("Bahawalpur");
+  </script>
+    
+    
+    
+    
   </body>
 </html>
