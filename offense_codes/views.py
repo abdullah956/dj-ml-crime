@@ -95,43 +95,55 @@ def search_result(request):
 
 def predict_year(request):
     return render(request, 'predict_year.html')
-
 def predict_result(request):
     user_year = int(request.GET.get('year'))
+    if user_year < 2025 or user_year > 2030:
+        return render(request, 'predict_result.html', {'error': 'Invalid year. Please enter a year between 2025 and 2030.'})
+
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
-    years = np.array([2019, 2020, 2021, 2022, 2023, 2024]).reshape(-1, 1)
-    future_years = np.array([2025, 2026, 2027, 2028, 2029, 2030]).reshape(-1, 1)
-    predictions = {}
-    for i, row in data.iterrows():
-        crime_data = row[['2019', '2020', '2021', '2022', '2023', '2024']].values.reshape(-1, 1)
+    
+    train_years = np.array([2019, 2020, 2021, 2022, 2023, 2024]).reshape(-1, 1)
+    predict_years = np.array([user_year]).reshape(-1, 1)
+
+    actual_2024 = {}
+    predicted_year = {}
+
+    for _, row in data.iterrows():
+        y = row[['2019', '2020', '2021', '2022', '2023', '2024']].values.astype(float).reshape(-1, 1)
         model = LinearRegression()
-        model.fit(years, crime_data)
-        future_predictions = model.predict(future_years)
-        predictions[row['Category']] = future_predictions.flatten()
-    future_years_df = pd.DataFrame(predictions, index=[2025, 2026, 2027, 2028, 2029, 2030])
+        model.fit(train_years, y)
+        prediction = model.predict(predict_years).flatten()[0]
+        category = row['Category']
+        actual_2024[category] = float(row['2024'])
+        predicted_year[category] = prediction
 
-    if user_year in future_years_df.index:
-        predicted_crime_rates = future_years_df.loc[user_year]
-        plt.figure(figsize=(10, 6))
-        plt.bar(predicted_crime_rates.index, predicted_crime_rates.values, color='skyblue')
-        plt.title(f"Predicted Crime Rates for {user_year}")
-        plt.xlabel("Crime Categories")
-        plt.ylabel("Predicted Crime Count")
-        plt.xticks(rotation=45, ha='right')
-        plt.tight_layout()
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        buffer.seek(0)
-        image_png = buffer.getvalue()
-        buffer.close()
-        graph = base64.b64encode(image_png)
-        graph = graph.decode('utf-8')
-        return render(request, 'predict_result.html', {'graph': graph, 'user_year': user_year})
-    else:
-        return render(request, 'predict_result.html', {'error': 'Invalid year. Please enter a year between 2025 and 2030.'})
+    categories = list(actual_2024.keys())
+    actual_vals = [actual_2024[cat] for cat in categories]
+    predicted_vals = [predicted_year[cat] for cat in categories]
 
+    x = np.arange(len(categories))
+    width = 0.35
+
+    plt.figure(figsize=(12, 6))
+    plt.bar(x - width/2, actual_vals, width, label='2024 (Actual)', color='orange')
+    plt.bar(x + width/2, predicted_vals, width, label=f'{user_year} (Predicted)', color='skyblue')
+    plt.xticks(x, categories, rotation=45, ha='right')
+    plt.xlabel("Crime Categories")
+    plt.ylabel("Crime Count")
+    plt.title(f"Crime Comparison: 2024 vs {user_year}")
+    plt.legend()
+    plt.tight_layout()
+
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+    graph = base64.b64encode(image_png).decode('utf-8')
+
+    return render(request, 'predict_result.html', {'graph': graph, 'user_year': user_year})
 def chat(request):
     return render(request, 'chat.html')
 
