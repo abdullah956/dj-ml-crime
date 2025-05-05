@@ -293,7 +293,6 @@ def predicted_crime_by_area_view(request):
 
 
 
-
 def crime_rate_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
@@ -304,12 +303,23 @@ def crime_rate_by_area_view(request):
 
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(12, 6 * nrows))
 
+    # Generate a unique color for each area
+    colors = sns.color_palette("tab10", len(data['Area'].unique()))
+
     for i, crime in enumerate(data['Category'].unique()):
         crime_data = data[data['Category'] == crime].groupby('Area')[['2019', '2020', '2021', '2022', '2023', '2024']].sum().reset_index()
         crime_data_melted = crime_data.melt(id_vars='Area', var_name='Year', value_name='Offenses')
-        sns.barplot(x='Area', y='Offenses', hue='Year', data=crime_data_melted, palette='coolwarm', ax=axes[i])
+        
+        # Assign colors to each area line
+        for j, area in enumerate(crime_data['Area'].unique()):
+            area_data = crime_data_melted[crime_data_melted['Area'] == area]
+            sns.lineplot(x='Year', y='Offenses', data=area_data, marker='o', ax=axes[i], label=area, color=colors[j])
+
         axes[i].set_title(f"Crime Offenses by Area for {crime} (2019-2024)")
-        axes[i].set_xticklabels(axes[i].get_xticklabels(), rotation=45, ha='right')
+        axes[i].set_xticks(['2019', '2020', '2021', '2022', '2023', '2024'])  # Ensure all years are shown on the x-axis
+        axes[i].set_xticklabels(['2019', '2020', '2021', '2022', '2023', '2024'], rotation=45, ha='right')
+        axes[i].set_ylabel('Offenses')
+        axes[i].legend(title='Area')
 
     plt.tight_layout()
 
