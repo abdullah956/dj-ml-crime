@@ -166,19 +166,50 @@ def area_crime_heatmap(request):
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
-    area_crime_data = data.groupby('Area')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
+    
+    images = []
+
+    # Heatmap 1: Area vs Year
+    area_crime = data.groupby('Area')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
     plt.figure(figsize=(12, 8))
-    sns.heatmap(area_crime_data, annot=True, cmap="YlGnBu", linewidths=0.5, fmt='g')
-    plt.title('Total Crimes in Areas (2019-2024)')
+    sns.heatmap(area_crime, annot=True, cmap="YlGnBu", linewidths=0.5, fmt='g')
+    plt.title('Total Crimes in Areas (2019–2024)')
     plt.xlabel('Year')
     plt.ylabel('Area')
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
-    image_png = buffer.getvalue()
+    images.append(base64.b64encode(buffer.getvalue()).decode('utf-8'))
     buffer.close()
-    graph = base64.b64encode(image_png).decode('utf-8')
-    return render(request, 'area_crime_heatmap.html', {'graph': graph})
+
+    # Heatmap 2: Category vs Year
+    cat_year = data.groupby('Category')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
+    plt.figure(figsize=(14, 10))
+    sns.heatmap(cat_year, annot=True, cmap="OrRd", linewidths=0.5, fmt='g')
+    plt.title('Total Crimes per Category (2019–2024)')
+    plt.xlabel('Year')
+    plt.ylabel('Category')
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    images.append(base64.b64encode(buffer.getvalue()).decode('utf-8'))
+    buffer.close()
+
+    # Heatmap 3: Area vs Category (Total)
+    data['Total'] = data[['2019', '2020', '2021', '2022', '2023', '2024']].sum(axis=1)
+    area_cat = data.groupby(['Area', 'Category'])['Total'].sum().unstack(fill_value=0)
+    plt.figure(figsize=(16, 12))
+    sns.heatmap(area_cat, annot=True, cmap="coolwarm", linewidths=0.5, fmt='g')
+    plt.title('Total Crimes per Area per Category')
+    plt.xlabel('Category')
+    plt.ylabel('Area')
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    images.append(base64.b64encode(buffer.getvalue()).decode('utf-8'))
+    buffer.close()
+
+    return render(request, 'area_crime_heatmap.html', {'graphs': images})
 
 
 # def predicted_crime_by_area_view(request):

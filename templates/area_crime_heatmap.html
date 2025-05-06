@@ -105,9 +105,12 @@
       <div class="d-flex justify-content-center align-items-center mt-5" style="min-height: 60vh;">
         <div class="card shadow-lg border-0 p-4 text-center" style="width: 1000px; border-radius: 12px;">
           <h2 class="mb-4 text-primary">Area Crime Heatmap</h2>
-          <div class="d-flex justify-content-center">
-            <img src="data:image/png;base64,{{ graph }}" alt="Area Crime Heatmap" class="img-fluid rounded shadow" style="max-width: 100%;" />
-          </div>
+          {% for graph in graphs %}
+<div class="d-flex justify-content-center mb-4">
+    <img src="data:image/png;base64,{{ graph }}" class="img-fluid rounded shadow" style="max-width: 100%;" />
+</div>
+{% endfor %}
+
         </div>
       </div>
 
