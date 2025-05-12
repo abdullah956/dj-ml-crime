@@ -10,14 +10,75 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import ContactMessage, NewsletterSubscription
 
+# def home(request):
+#     data = pd.read_excel('fypdata.xlsx')
+#     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
+#     data = data.drop(0)
+    
+#     crime_years = ['2019', '2020', '2021', '2022', '2023', '2024']
+#     area_crime_data = data.groupby('Area')[crime_years].sum()
+#     area_crime_data_dict = area_crime_data.to_dict(orient='index')
+
+#     max_crimes = 0
+#     city_with_max_crimes = ""
+#     year_with_max_crimes = ""
+#     yearly_totals = {year: 0 for year in crime_years}
+
+#     for city, crimes in area_crime_data_dict.items():
+#         city_total = sum(crimes.values())
+#         if city_total > max_crimes:
+#             max_crimes = city_total
+#             city_with_max_crimes = city
+
+#         for year, count in crimes.items():
+#             yearly_totals[year] += count
+
+#     year_with_max_crimes = max(yearly_totals, key=yearly_totals.get)
+
+#     if request.method == "POST":
+#         if "message" in request.POST:
+#             name = request.POST.get("name")
+#             email = request.POST.get("email")
+#             subject = request.POST.get("subject")
+#             message = request.POST.get("message")
+
+#             ContactMessage.objects.create(name=name, email=email, subject=subject, message=message)
+#             messages.success(request, "Your message has been sent. Thank you!")
+
+#         elif "email" in request.POST:
+#             email = request.POST.get("email")
+#             if email:
+#                 if not NewsletterSubscription.objects.filter(email=email).exists():
+#                     NewsletterSubscription.objects.create(email=email)
+#                     messages.success(request, "Your subscription request has been sent. Thank you!")
+#                 else:
+#                     messages.warning(request, "You are already subscribed.")
+#             else:
+#                 messages.error(request, "Please enter a valid email.")
+
+#         return redirect("home")
+
+#     return render(request, "home.html", {
+#         'area_crime_data': area_crime_data_dict,
+#         'max_crimes': max_crimes,
+#         'city_with_max_crimes': city_with_max_crimes,
+#         'year_with_max_crimes': year_with_max_crimes,
+#         'yearly_totals': yearly_totals
+#     })
+
 def home(request):
     data = pd.read_excel('fypdata.xlsx')
     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
     data = data.drop(0)
-    
+
     crime_years = ['2019', '2020', '2021', '2022', '2023', '2024']
     area_crime_data = data.groupby('Area')[crime_years].sum()
-    area_crime_data_dict = area_crime_data.to_dict(orient='index')
+
+    # Convert crime counts to integers for compatibility with widthratio
+    area_crime_data_dict = {
+        area: {year: int(crimes[year]) for year in crime_years}
+        for area, crimes in area_crime_data.to_dict(orient='index').items()
+    }
 
     max_crimes = 0
     city_with_max_crimes = ""

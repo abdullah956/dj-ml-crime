@@ -223,25 +223,56 @@
 
 
       <!-- Skills Section -->
-      <section id="crime-trends" class="skills section">
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-          <div class="row skills-content skills-animation">
-            {% for area, data in area_crime_data.items %}
-              <div class="col-lg-6">
-                <h5 class="text-center">{{ area }}</h5>
-                {% for year, crime_rate in data.items %}
-                  <div class="progress">
-                    <span class="skill"><span>{{ year }}</span> <i class="val">{{ crime_rate }} crimes</i></span>
-                    <div class="progress-bar-wrap">
-                      <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="{{ crime_rate }}" aria-valuemin="0" aria-valuemax="500" style="width: {{ crime_rate|add:0|floatformat:0|default:0|divisibleby:1|yesno:'300,0' }}%;"></div>
-                    </div>
-                  </div>
-                {% endfor %}
+   
+
+      <style>
+        .progress-bar-wrap {
+          background-color: #f0f0f0;
+          border-radius: 10px;
+          height: 25px;
+          overflow: hidden;
+        }
+        
+        .progress-bar {
+          height: 100%;
+          line-height: 25px;
+          text-align: center;
+          color: white;
+          font-weight: bold;
+          transition: width 1s ease-in-out;
+        }
+        </style>
+        
+
+<section id="crime-trends" class="skills section">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row skills-content skills-animation">
+      {% for area, data in area_crime_data.items %}
+        <div class="col-lg-6 mb-4">
+          <h5 class="text-center text-primary">{{ area }}</h5>
+          {% for year, crime_rate in data.items %}
+            <div class="progress mb-2">
+              <div class="d-flex justify-content-between mb-1">
+                <strong>{{ year }}</strong>
+                <strong>{{ crime_rate }} CRIMES Out of 500</strong>
               </div>
-            {% endfor %}
-          </div>
+              {% widthratio crime_rate 500 100 as percent %}
+              <div class="progress-bar-wrap" style="background-color: #eee; border-radius: 8px; height: 25px;">
+                <div class="progress-bar bg-primary text-white" role="progressbar"
+                     style="width: {{ percent }}%; border-radius: 8px; height: 100%;">
+                  {{ percent }}%
+                </div>
+              </div>
+            </div>
+          {% endfor %}
         </div>
-      </section>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+      
+      
 
 
     <div class="container">
