@@ -59,16 +59,16 @@
     <header id="header" class="header sticky-top">
       <div class="branding d-flex align-items-cente">
         <div class="container position-relative d-flex align-items-center justify-content-between">
-          <a href="index.html" class="logo d-flex align-items-center">
+          <a href="{% url 'home'%}" class="logo d-flex align-items-center">
             <!-- Uncomment the line below if you also wish to use an image logo -->
             <!-- <img src="assets/img/logo.png" alt=""> -->
-            <h1 class="sitename">CrimeLens</h1>
+            <h1 class="sitename">Crime Alert</h1>
           </a>
 
           <nav id="navmenu" class="navmenu">
             <ul>
               <li>
-                <a href="{% url 'search_area' %}">Search Area</a>
+                <a href="{% url 'search_area' %}">Search City</a>
               </li>
               <li>
                 <a href="{% url 'predict_year' %}">Predict Year</a>
@@ -77,10 +77,10 @@
                 <a href="{% url 'chat' %}">Chat</a>
               </li>
               <li>
-                <a href="{% url 'area_crime_heatmap' %}">Area Crime Heat Map</a>
+                <a href="{% url 'area_crime_heatmap' %}">City Crime Heat Map</a>
               </li>
               <li>
-                <a href="{% url 'predicted_crime_by_area' %}">Predict Area Crime</a>
+                <a href="{% url 'predicted_crime_by_area' %}">Predict City Crime</a>
               </li>
               <li>
                 <a href="{% url 'crime_rate_by_area' %}">Crime 19-24</a>
@@ -112,7 +112,7 @@
         <div class="container">
           <div class="row gy-4">
             <div class="col-lg-8 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
-              <h1 style="color: black;"> <span>Welcome to CrimeLens</span></h1>
+              <h1 style="color: black;"> <span>Welcome to Crime Alert</span></h1>
               <p>"CrimeLens – Spot. Analyze. Prevent."</p>
               <div class="d-flex">
                 {% comment %} <a href="#about" class="btn-get-started">Get Started</a> {% endcomment %}
@@ -508,7 +508,7 @@
                   </div>
                 </div>
                 <div class="member-info">
-                  <h4>Hassan</h4>
+                  <h4>Sher Gull</h4>
                   <span>Reg No: COSC 211101030</span>
                 </div>
               </div>
@@ -526,7 +526,7 @@
                   </div>
                 </div>
                 <div class="member-info">
-                  <h4>Sher Gul</h4>
+                  <h4>Hassan</h4>
                   <span>Reg No: COSC 211101027</span>
                 </div>
               </div>
@@ -622,7 +622,7 @@
       <div class="container footer-top">
         <div class="row gy-4">
           <div class="col-lg-6 footer-about">
-            <a href="index.html" class="d-flex align-items-center"><span class="sitename">CrimeLens</span></a>
+            <a href="{% url 'home'%}" class="d-flex align-items-center"><span class="sitename">Crime Alert</span></a>
             <div class="footer-contact pt-3">
               <p>
                 <strong>Email:</strong> <span>support@crimelens.com</span>
@@ -634,7 +634,7 @@
             <h4>Useful Links</h4>
             <ul>
               <li>
-                <i class="bi bi-chevron-right"></i> <a href="{% url 'search_area' %}">Search Area</a>
+                <i class="bi bi-chevron-right"></i> <a href="{% url 'search_area' %}">Search City</a>
               </li>
               <li>
                 <i class="bi bi-chevron-right"></i> <a href="{% url 'predict_year' %}">Predict Year</a>
@@ -643,10 +643,10 @@
                 <i class="bi bi-chevron-right"></i> <a href="{% url 'chat' %}">Chat</a>
               </li>
               <li>
-                <i class="bi bi-chevron-right"></i> <a href="{% url 'area_crime_heatmap' %}">Area Crime Heat Map</a>
+                <i class="bi bi-chevron-right"></i> <a href="{% url 'area_crime_heatmap' %}">City Crime Heat Map</a>
               </li>
               <li>
-                <i class="bi bi-chevron-right"></i> <a href="{% url 'predicted_crime_by_area' %}">Predict Area Crime</a>
+                <i class="bi bi-chevron-right"></i> <a href="{% url 'predicted_crime_by_area' %}">Predict City Crime</a>
               </li>
               <li>
                 <i class="bi bi-chevron-right"></i> <a href="{% url 'crime_rate_by_area' %}">Crime 19-24</a>
