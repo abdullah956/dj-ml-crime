@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import ContactMessage, NewsletterSubscription
+import re
 
 # def home(request):
 #     data = pd.read_excel('fypdata.xlsx')
@@ -207,19 +208,53 @@ def predict_result(request):
     return render(request, 'predict_result.html', {'graph': graph, 'user_year': user_year})
 def chat(request):
     return render(request, 'chat.html')
-
 def chatbot_response(request):
     user_message = request.GET.get('message', '').lower()
     data = pd.read_excel('fypdata.xlsx')
-    data_cleaned = data[['Unnamed: 0', 'Unnamed: 1']]
-    data_cleaned.columns = ['Category', 'Offense_Code']
+    data = data.drop(0)
+    data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
+
     reply = "I'm sorry, I don't understand."
-    for _, row in data_cleaned.iterrows():
-        category = row['Category'].lower()
-        if category in user_message:
-            offense_code = row['Offense_Code']
-            reply = f"The person will be charged with the offense code {offense_code}."
+
+    # 1. Offense code lookup
+    for _, row in data.iterrows():
+        if row['Category'].lower() in user_message:
+            reply = f"The person will be charged with the offense code {row['Offense_Code']}."
             break
+
+    # 2. Most common crimes in [area]
+    area_match = re.search(r'most common crimes in ([a-zA-Z ]+)', user_message)
+    if area_match:
+        area = area_match.group(1).strip().lower()
+        area_data = data[data['Area'].str.lower() == area]
+        top_crimes = (
+            area_data.groupby('Category')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
+            .sum(axis=1).sort_values(ascending=False).head(3).index.tolist()
+        )
+        reply = f"In {area.title()}, the most reported crimes are {', '.join(top_crimes)}."
+
+    # 3. Crime count in 2024 in [area]
+    crime_count_match = re.search(r'how many crimes happened in ([a-zA-Z ]+).*last year', user_message)
+    if crime_count_match:
+        area = crime_count_match.group(1).strip().lower()
+        area_data = data[data['Area'].str.lower() == area]
+        total_2024 = area_data['2024'].astype(int).sum()
+        reply = f"In 2024, there were {total_2024} reported crimes in {area.title()}."
+
+    # 4. Crime rate in [area] (mocked with placeholder population)
+    crime_rate_match = re.search(r'crime rate in ([a-zA-Z ]+)', user_message)
+    if crime_rate_match:
+        area = crime_rate_match.group(1).strip().lower()
+        area_data = data[
+        (data['Area'].str.lower() == area) | 
+        (data['Locality'].str.lower() == area)
+        ]
+
+        total_crimes = area_data[['2019', '2020', '2021', '2022', '2023', '2024']].astype(int).sum().sum()
+        population = 50000  # placeholder, should be replaced with actual data
+        rate = round((total_crimes / population) * 1000, 2)
+        reply = f"The crime rate in {area.title()} is {rate} crimes per 1,000 residents."
+
     return JsonResponse({'response': reply})
 
 def area_crime_heatmap(request):
@@ -388,6 +423,7 @@ def predicted_crime_by_area_view(request):
 
     return render(request, 'predicted_crime_by_area.html', {'graphs': graphs})
 
+
 def crime_rate_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
@@ -398,20 +434,25 @@ def crime_rate_by_area_view(request):
 
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(12, 6 * nrows))
 
-    # Generate a unique color for each area
+    if nrows == 1:
+        axes = [axes]
+
     colors = sns.color_palette("tab10", len(data['Area'].unique()))
 
     for i, crime in enumerate(data['Category'].unique()):
         crime_data = data[data['Category'] == crime].groupby('Area')[['2019', '2020', '2021', '2022', '2023', '2024']].sum().reset_index()
         crime_data_melted = crime_data.melt(id_vars='Area', var_name='Year', value_name='Offenses')
-        
-        # Assign colors to each area line
+
         for j, area in enumerate(crime_data['Area'].unique()):
             area_data = crime_data_melted[crime_data_melted['Area'] == area]
             sns.lineplot(x='Year', y='Offenses', data=area_data, marker='o', ax=axes[i], label=area, color=colors[j])
 
+            for x, y in zip(area_data['Year'], area_data['Offenses']):
+                axes[i].text(x, y + y * 0.02, f'{int(y)}', ha='center', va='bottom', fontsize=9, fontweight='bold', color=colors[j])
+
+
         axes[i].set_title(f"Crime Offenses by Area for {crime} (2019-2024)")
-        axes[i].set_xticks(['2019', '2020', '2021', '2022', '2023', '2024'])  # Ensure all years are shown on the x-axis
+        axes[i].set_xticks(['2019', '2020', '2021', '2022', '2023', '2024'])
         axes[i].set_xticklabels(['2019', '2020', '2021', '2022', '2023', '2024'], rotation=45, ha='right')
         axes[i].set_ylabel('Offenses')
         axes[i].legend(title='Area')
@@ -424,5 +465,5 @@ def crime_rate_by_area_view(request):
     image_png = buffer.getvalue()
     buffer.close()
     graph = base64.b64encode(image_png).decode('utf-8')
-    
+
     return render(request, 'crime_rate_by_area.html', {'graph': graph})
