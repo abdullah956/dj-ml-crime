@@ -222,7 +222,6 @@ def chatbot_response(request):
             break
     return JsonResponse({'response': reply})
 
-
 def area_crime_heatmap(request):
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
@@ -232,11 +231,14 @@ def area_crime_heatmap(request):
 
     # Heatmap 1: Area vs Year
     area_crime = data.groupby('Area')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
-    plt.figure(figsize=(12, 8))
-    sns.heatmap(area_crime, annot=True, cmap="YlGnBu", linewidths=0.5, fmt='g')
-    plt.title('Total Crimes in Areas (2019–2024)')
-    plt.xlabel('Year')
-    plt.ylabel('Area')
+    plt.figure(figsize=(14, 10))
+    sns.heatmap(area_crime, annot=True, cmap="mako", linewidths=0.6, fmt='g', cbar_kws={'label': 'Crime Count'})
+    plt.title('Crimes per Area Over Years (2019–2024)', fontsize=16)
+    plt.xlabel('Year', fontsize=12)
+    plt.ylabel('Area', fontsize=12)
+    plt.xticks(rotation=45)
+    plt.yticks(rotation=0)
+    plt.tight_layout()
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
@@ -245,25 +247,31 @@ def area_crime_heatmap(request):
 
     # Heatmap 2: Category vs Year
     cat_year = data.groupby('Category')[['2019', '2020', '2021', '2022', '2023', '2024']].sum()
-    plt.figure(figsize=(14, 10))
-    sns.heatmap(cat_year, annot=True, cmap="OrRd", linewidths=0.5, fmt='g')
-    plt.title('Total Crimes per Category (2019–2024)')
-    plt.xlabel('Year')
-    plt.ylabel('Category')
+    plt.figure(figsize=(16, 12))
+    sns.heatmap(cat_year, annot=True, cmap="flare", linewidths=0.6, fmt='g', cbar_kws={'label': 'Crime Count'})
+    plt.title('Crimes per Category Over Years (2019–2024)', fontsize=16)
+    plt.xlabel('Year', fontsize=12)
+    plt.ylabel('Category', fontsize=12)
+    plt.xticks(rotation=45)
+    plt.yticks(rotation=0)
+    plt.tight_layout()
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
     images.append(base64.b64encode(buffer.getvalue()).decode('utf-8'))
     buffer.close()
 
-    # Heatmap 3: Area vs Category (Total)
+    # Heatmap 3: Area vs Category
     data['Total'] = data[['2019', '2020', '2021', '2022', '2023', '2024']].sum(axis=1)
     area_cat = data.groupby(['Area', 'Category'])['Total'].sum().unstack(fill_value=0)
-    plt.figure(figsize=(16, 12))
-    sns.heatmap(area_cat, annot=True, cmap="coolwarm", linewidths=0.5, fmt='g')
-    plt.title('Total Crimes per Area per Category')
-    plt.xlabel('Category')
-    plt.ylabel('Area')
+    plt.figure(figsize=(18, 14))
+    sns.heatmap(area_cat, annot=True, cmap="rocket_r", linewidths=0.6, fmt='g', cbar_kws={'label': 'Total Crimes'})
+    plt.title('Total Crimes per Area by Category (2019–2024)', fontsize=16)
+    plt.xlabel('Category', fontsize=12)
+    plt.ylabel('Area', fontsize=12)
+    plt.xticks(rotation=45)
+    plt.yticks(rotation=0)
+    plt.tight_layout()
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
@@ -331,45 +339,42 @@ def predicted_crime_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
     data = data.drop(0)
     data.columns = ['Category', 'Offense_Code', '2019', '2020', '2021', '2022', '2023', '2024', 'Area', 'Locality']
-    
+
     years = np.array([2019, 2020, 2021, 2022, 2023, 2024]).reshape(-1, 1)
-    future_years = np.array([2025, 2026, 2027, 2028, 2029, 2030]).reshape(-1, 1)
+    future_years = np.array([2025, 2026, 2027, 2028, 2029, 2030])
     predictions = {}
 
-    # Define color palette (you can use seaborn color palettes for variety)
-    colors = sns.color_palette("Set1", len(data['Category'].unique()))
-    crime_category_to_color = {category: colors[i] for i, category in enumerate(data['Category'].unique())}
+    graphs = []
 
     for area in data['Area'].unique():
         area_data = data[data['Area'] == area]
-        for crime_category in area_data['Category'].unique():
-            crime_data = area_data[area_data['Category'] == crime_category]
-            crime_values = crime_data[['2019', '2020', '2021', '2022', '2023', '2024']].values.flatten().reshape(-1, 1)
+        for crime in area_data['Category'].unique():
+            row = area_data[(area_data['Category'] == crime)]
+            X = years
+            y = row[['2019', '2020', '2021', '2022', '2023', '2024']].values.flatten().reshape(-1, 1)
             model = LinearRegression()
-            model.fit(years, crime_values)
-            future_predictions = model.predict(future_years)
-            
-            if area not in predictions:
-                predictions[area] = {}
-            predictions[area][crime_category] = future_predictions.flatten()
+            model.fit(X, y)
+            y_pred = model.predict(future_years.reshape(-1, 1)).flatten()
+            y_2024 = float(row['2024'].values[0])
 
-    graphs = []
-    for area, area_predictions in predictions.items():
-        for crime, predicted_values in area_predictions.items():
+            x = np.arange(len(future_years))
+            width = 0.4
+
+            # Create unique colors for each bar
+            colors_2024 = sns.color_palette("pastel", len(future_years))
+            colors_pred = sns.color_palette("dark", len(future_years))
+
             plt.figure(figsize=(8, 4))
+            for i in range(len(future_years)):
+                plt.bar(x[i] - width/2, y_2024, width=width, color=colors_2024[i], label='2024' if i == 0 else "")
+                plt.bar(x[i] + width/2, y_pred[i], width=width, color=colors_pred[i], label='Predicted' if i == 0 else "")
 
-            # Assign a unique color for each crime category using the dictionary
-            color = crime_category_to_color[crime]
-            
-            # Plotting the bar chart
-            plt.bar(future_years.flatten(), predicted_values, color=color)
-            plt.title(f"Predicted Crime Rates for {crime} in {area} (2025-2030)", fontsize=14)
-            plt.xlabel("Year", fontsize=12)
-            plt.ylabel("Predicted Crime Count", fontsize=12)
-            plt.xticks(future_years.flatten())
-
-            # Adding gridlines and customizing the appearance
-            plt.grid(axis='y', linestyle='--', alpha=0.7)
+            plt.xticks(x, future_years)
+            plt.title(f"{crime} in {area}: 2024 vs Predictions (2025–2030)")
+            plt.xlabel("Year")
+            plt.ylabel("Crime Count")
+            plt.legend()
+            plt.grid(axis='y', linestyle='--', alpha=0.6)
             plt.tight_layout()
 
             buffer = io.BytesIO()
@@ -382,8 +387,6 @@ def predicted_crime_by_area_view(request):
             plt.close()
 
     return render(request, 'predicted_crime_by_area.html', {'graphs': graphs})
-
-
 
 def crime_rate_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
