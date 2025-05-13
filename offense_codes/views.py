@@ -395,7 +395,6 @@ def predicted_crime_by_area_view(request):
             x = np.arange(len(future_years))
             width = 0.4
 
-            # Create unique colors for each bar
             colors_2024 = sns.color_palette("pastel", len(future_years))
             colors_pred = sns.color_palette("dark", len(future_years))
 
@@ -403,6 +402,11 @@ def predicted_crime_by_area_view(request):
             for i in range(len(future_years)):
                 plt.bar(x[i] - width/2, y_2024, width=width, color=colors_2024[i], label='2024' if i == 0 else "")
                 plt.bar(x[i] + width/2, y_pred[i], width=width, color=colors_pred[i], label='Predicted' if i == 0 else "")
+                
+                plt.text(x[i] - width/2, y_2024 + y_2024 * 0.01, f'{int(y_2024)}',
+                         ha='center', va='bottom', fontsize=8, fontweight='bold')
+                plt.text(x[i] + width/2, y_pred[i] + y_pred[i] * 0.01, f'{int(y_pred[i])}',
+                         ha='center', va='bottom', fontsize=8, fontweight='bold')
 
             plt.xticks(x, future_years)
             plt.title(f"{crime} in {area}: 2024 vs Predictions (2025–2030)")
@@ -422,7 +426,6 @@ def predicted_crime_by_area_view(request):
             plt.close()
 
     return render(request, 'predicted_crime_by_area.html', {'graphs': graphs})
-
 
 def crime_rate_by_area_view(request):
     data = pd.read_excel('fypdata.xlsx')
